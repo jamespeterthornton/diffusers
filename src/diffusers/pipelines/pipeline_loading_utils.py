@@ -48,6 +48,7 @@ from huggingface_hub.utils import validate_hf_hub_args
 
 from ..utils import FLAX_WEIGHTS_NAME, ONNX_EXTERNAL_WEIGHTS_NAME, ONNX_WEIGHTS_NAME
 
+import raiv.third_party.diffusers.src.diffusers as diffusers_module
 
 INDEX_FILE = "diffusion_pytorch_model.bin"
 CUSTOM_PIPELINE_FILE_NAME = "pipeline.py"
@@ -331,7 +332,7 @@ def _get_pipeline_class(
     if class_obj.__name__ != "DiffusionPipeline":
         return class_obj
 
-    diffusers_module = importlib.import_module(class_obj.__module__.split(".")[0])
+    # diffusers_module = importlib.import_module(class_obj.__module__.split(".")[0])
     class_name = class_name or config["_class_name"]
     if not class_name:
         raise ValueError(
@@ -415,7 +416,7 @@ def load_sub_model(
     load_method = getattr(class_obj, load_method_name)
 
     # add kwargs to loading method
-    diffusers_module = importlib.import_module(__name__.split(".")[0])
+    # diffusers_module = importlib.import_module(__name__.split(".")[0])
     loading_kwargs = {}
     if issubclass(class_obj, torch.nn.Module):
         loading_kwargs["torch_dtype"] = torch_dtype
@@ -480,7 +481,7 @@ def load_sub_model(
 
 def _fetch_class_library_tuple(module):
     # import it here to avoid circular import
-    diffusers_module = importlib.import_module(__name__.split(".")[0])
+    # diffusers_module = importlib.import_module(__name__.split(".")[0])
     pipelines = getattr(diffusers_module, "pipelines")
 
     # register the config from the original module, not the dynamo compiled one
